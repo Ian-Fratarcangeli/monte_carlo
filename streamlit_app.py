@@ -3,11 +3,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 from data import get_historical_prices, calculate_log_returns, set_fred_api_key, get_risk_free_rate
 from blackscholes import BlackScholesCall, BlackScholesPut
+from dotenv import load_dotenv
+
+load_dotenv()
 
 st.title("Monte Carlo Option Pricing Dashboard")
 
-# API Key setup (hide in real app)
-set_fred_api_key("09076f364bb3c14142005a12bb7ef7a3")
+API_KEY = os.getenv("FRED_API_KEY")
+set_fred_api_key(API_KEY)
 
 # Sidebar for user input
 st.sidebar.header("Simulation Parameters")
