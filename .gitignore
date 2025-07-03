@@ -7,7 +7,7 @@ __pycache__/
 .venv/
 env/
 venv/
-openbb-env/
+.openbbenv/
 
 # Jupyter notebook temp files
 *.nbconvert.ipynb
