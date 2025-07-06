@@ -1,7 +1,7 @@
 numpy
 matplotlib
 python-dotenv
-openbb==4.4.4
+openbb
 streamlit
 yfinance
 blackscholes
