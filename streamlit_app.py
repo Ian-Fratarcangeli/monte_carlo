@@ -1,9 +1,13 @@
 import streamlit as st
 import numpy as np
+import os
 import matplotlib.pyplot as plt
 from data import get_historical_prices, calculate_log_returns, set_fred_api_key, get_risk_free_rate
 from blackscholes import BlackScholesCall, BlackScholesPut
 from dotenv import load_dotenv
+
+import sys
+st.write(f"Running Python version: {sys.version}")
 
 load_dotenv()
 
