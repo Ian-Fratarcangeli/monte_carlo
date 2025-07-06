@@ -6,9 +6,6 @@ from data import get_historical_prices, calculate_log_returns, set_fred_api_key,
 from blackscholes import BlackScholesCall, BlackScholesPut
 from dotenv import load_dotenv
 
-import sys
-st.write(f"Running Python version: {sys.version}")
-
 load_dotenv()
 
 st.title("Monte Carlo Option Pricing Dashboard")
@@ -25,14 +22,14 @@ T = st.sidebar.number_input("Time to Maturity (years, T)", value=1.0, step=0.5)
 Nsteps = st.sidebar.number_input("Number of Steps", value=10000, step=1000)
 n_sim = st.sidebar.number_input("Number of Simulations", value=1000, step=100)
 option_type = st.sidebar.selectbox("Option Type", ["call", "put"])
-
+historical_time = st.sidebar.selectbox("Stock Price Data", ["6mo", "1yr", "2yr", "5yr"])
 # Fetch data
 st.header(f"Fetched Historical Data for {symbol}")
 data_load_state = st.text('Loading data...')
-apple = get_historical_prices(symbol=symbol)
+apple = get_historical_prices(symbol=symbol, time_arg=historical_time)
 data_load_state.text('')
 if apple.empty:
-    st.error(f"No data found for symbol: {symbol}")
+    st.error(f"No data found for symbol: {symbol} for time: {historical_time}")
     st.stop()
 
 # Calculate log returns
