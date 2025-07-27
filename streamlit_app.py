@@ -31,7 +31,13 @@ data_load_state.text('')
 if apple.empty:
     st.error(f"No data found for symbol: {symbol} for time: {historical_time}")
     st.stop()
-
+st.header("Data")
+st.write("""Stock price data is fetched from Yahoo Finance using the yfinance package. 
+         The data is used to estimate a daily volatility that is then annualized to use as a simulation input. Since we are assuming risk-neutrality, 
+         we use the risk-free rate as the drift constant instead of the mean return.
+         Feel free to use the sidebar to augment the period of historical data used
+         for the simulations.
+""")
 # Calculate log returns
 log_returns, mean_return, std_return = calculate_log_returns(apple)
 
@@ -48,6 +54,12 @@ st.sidebar.markdown(f"**Annualized Volatility:** {sigma:.4f}")
 
 # Geometric Brownian Motion Monte Carlo Simulation
 st.header("Geometric Brownian Motion Monte Carlo Simulation")
+st.write("""Below is a visual of price paths for GMB simulations. To calculate the stochastic process over price paths, we combine a drift term with the brownian term
+         while accounting for the time steps. Once all the paths have been simulated, the final price for each path is taken and averaged to generate
+         an estimated price of the asset at the options maturity. Offsetting this price with the strike price (depending on call or put) gives us an option value
+        that is then discounted back (with risk-free rate) to account for the time value of money. What's important to note here is that GBM assumes a constant
+         variance in the asset price movements, which is unrealistic due to the changing conditions in the market.
+""")
 
 Z = np.random.normal(loc=0, scale=1, size=(int(n_sim), int(Nsteps)))
 X = np.zeros((int(n_sim), int(Nsteps) + 1))
@@ -74,6 +86,12 @@ st.write(f"**Monte Carlo {option_type.capitalize()} Estimate:** {monte_carlo_est
 
 # Heston Model Simulation
 st.header("Heston Model Monte Carlo Simulation")
+st.write("""The Heston model, unlike GBM, assumes that the variance follows its own stochastic process. This is a mean reversion process with
+         long term variance (Kappa) and volatility of the volatility parameters. Since we are now using a brownian motion for the variance process and
+         the asset price process, we build a covariance matrix for the two brownian motions given a correlation constant (rho). As a result, we have an asset
+         price path that is influenced by a variance path, making this model a more realistic simulation of asset price movements. The calculation for the final price
+         and its option value follow the same procedure as the GBM. Below is the visual for the Heston model price paths.
+""")
 #params
 v0 = sigma**2      # Initial variance
 k = 4    # Speed of mean reversion
@@ -114,6 +132,9 @@ else:
 heston_estimate = np.mean(heston_value) * np.exp(-r * T)
 st.write(f"**Heston {option_type.capitalize()} Estimate:** {heston_estimate:.4f}")
 
+st.header("Black-Scholes")
+st.write("""The Black-Scholes model is a cornerstone of option pricing and is still widely used to estimate option value. For this reason, I have used a Black-Scholes
+         Python package for option pricing on the given contract features and left its result below to use for comparison.""")
 # Black-Scholes Analytical Price
 st.header("Black-Scholes Analytical Price")
 if option_type == 'call':
